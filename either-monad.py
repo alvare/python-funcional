@@ -50,6 +50,10 @@ def get_permisos(permisos, user):
     else:
         return Left('No tiene permisos.')
 
+@curry
+def format_user(n, p):
+    return "El usuario {} tiene estos permisos: {}".format(n, ', '.join(p))
+
 
 users = [{'username': 'chancho', 'password': '444', 'name': 'Chanchito'},
          {'username': 'pedro', 'password': '123', 'name': 'Pedro Gomez'},
@@ -65,8 +69,6 @@ val = request_contains(['username', 'password'], req) >>\
       user_exists(users) >>\
       user_authenticates(users) >>\
       user_is_tecnico(tecnicos) >> (lambda user:
-      get_nombre(user) >> (lambda nombre:
-      get_permisos(permisos, user) >> (lambda permisos:
-      Right("El usuario {} tiene estos permisos: {}".format(nombre, ', '.join(permisos))))))
+      format_user * get_nombre(user) & get_permisos(permisos, user))
 
 print(val)
