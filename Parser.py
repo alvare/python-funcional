@@ -14,7 +14,7 @@ class Parser(Monad):
 def parse(parser, string):
     val = parser.value(string)
     if val:
-        return [0][0]
+        return val[0][0]
     else:
         return "error"
 
