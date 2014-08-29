@@ -18,7 +18,7 @@ def oneOf(chars):
     return sat(lambda x: x in chars)
 
 def many(p):
-    return many1(p).mplusplus(unit(Parser, []))
+    return many1(p) | unit(Parser, [])
 
 def many1(p):
     return p >> (lambda x:
@@ -26,7 +26,7 @@ def many1(p):
            unit(Parser, [x] + xs)))
 
 def sepby(p, sep):
-    return sepby1(p, sep).mplusplus(unit(Parser, []))
+    return sepby1(p, sep) | unit(Parser, [])
 
 def sepby1(p, sep):
     return p >> (lambda x:
@@ -41,8 +41,15 @@ def string(s):
     else:
         return unit(Parser, '')
 
-# examples
+def chainl(p, op, a):
+    return chainl1(p, op) | unit(Parser, a)
 
+def chainl1(p, op):
+    def rest(a):
+        return (op >> (lambda f: p >> (lambda b: rest(f(a, b))))) | unit(Parser, a)
+    return p >> rest
+
+# examples
 alpha = 'abcdefghijklmnopqrstuvwxyz'
 num = '1234567890'
 
@@ -61,29 +68,23 @@ def array_parser():
 def n_array_to_int(ls):
     return reduce(lambda x, y: x + y, map(lambda k: int(k[0]) * pow(10, k[1]), zip(ls, reversed(range(len(ls))))), 0)
 
-def number():
-    return many(oneOf(num)) >> (lambda ns:
-           many(space()) >> (lambda _:
-           unit(Parser, n_array_to_int(ns))))
-
 def dispatch(op):
     if op == '+':
         return lambda x, y: x + y
     elif op == '-':
         return lambda x, y: x - y
 
+def number():
+    return many(oneOf(num)) >> (lambda ns:
+           many(space()) >> (lambda _:
+           unit(Parser, n_array_to_int(ns))))
+
 def oper():
     return oneOf('+-') >> (lambda op:
            many(space()) >>
            unit(Parser, dispatch(op)))
 
-def triad():
-    return number() >> (lambda x:
-           oper() >> (lambda o:
-           number() >> (lambda y:
-           unit(Parser, o(x,y)))))
-
 def math_parser():
-    return many(triad())
+    return chainl1(number(), oper())
 
-print(parse(math_parser(), sys.argv[1]))
+print(math_parser().parse(sys.argv[1]))

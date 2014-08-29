@@ -19,15 +19,15 @@ class Parser(Monoid, Monad):
     def mplus(self, b):
         return Parser(lambda cs: self.value(cs) + b.value(cs))
 
-    def mplusplus(self, b):
+    def __or__(self, b):
         return Parser(lambda cs: (lambda y: [] if not y else [y[0]])((self + b).value(cs)))
 
-def parse(parser, string):
-    val = parser.value(string)
-    if val:
-        return val
-    else:
-        return "error"
+    def parse(self, string):
+        val = self.value(string)
+        if val:
+            return val
+        else:
+            return "error"
 
 def concat(ls):
     return reduce(lambda x, y: x+y, ls, [])
