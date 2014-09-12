@@ -55,7 +55,7 @@ num = '1234567890'
 
 def word():
     return many(oneOf(alpha)) >> (lambda w:
-           unit(Parser, mconcat(w)))
+           unit(Parser, reduce(lambda x, y: x + y, w, '')))
 
 def array_parser():
     return string('array') >>\
@@ -65,26 +65,4 @@ def array_parser():
            char(']') >>
            unit(Parser, e))
 
-def n_array_to_int(ls):
-    return reduce(lambda x, y: x + y, map(lambda k: int(k[0]) * pow(10, k[1]), zip(ls, reversed(range(len(ls))))), 0)
-
-def dispatch(op):
-    if op == '+':
-        return lambda x, y: x + y
-    elif op == '-':
-        return lambda x, y: x - y
-
-def number():
-    return many(oneOf(num)) >> (lambda ns:
-           many(space()) >> (lambda _:
-           unit(Parser, n_array_to_int(ns))))
-
-def oper():
-    return oneOf('+-') >> (lambda op:
-           many(space()) >>
-           unit(Parser, dispatch(op)))
-
-def math_parser():
-    return chainl1(number(), oper())
-
-print(math_parser().parse(sys.argv[1]))
+print(array_parser().parse(sys.argv[1]))
