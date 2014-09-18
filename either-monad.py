@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import sys
 from pymonad.Either import Right, Left
-from pymonad.Maybe import Just, Nothing
 from pymonad import curry
 
 def some(pred, coll):
