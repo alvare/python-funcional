@@ -1,35 +1,27 @@
 from random import randint
 
-def quicksort(myList, start, end):
+def quicksort(ls, start, end):
     if start < end:
-        # partition the list
-        pivot = partition(myList, start, end)
-        # sort both halves
-        quicksort(myList, start, pivot-1)
-        quicksort(myList, pivot+1, end)
-    return myList
+        pivot = partition(ls, start, end)
+        quicksort(ls, start, pivot-1)
+        quicksort(ls, pivot+1, end)
+    return ls
 
-def partition(myList, start, end):
-    pivot = myList[start]
-    left = start+1
+def partition(ls, start, end):
+    pivot = ls[start]
+    left = start + 1
     right = end
     done = False
     while not done:
-        while left <= right and myList[left] <= pivot:
+        while left <= right and ls[left] <= pivot:
             left = left + 1
-        while myList[right] >= pivot and right >=left:
+        while ls[right] >= pivot and right >=left:
             right = right -1
         if right < left:
             done= True
         else:
-            # swap places
-            temp=myList[left]
-            myList[left]=myList[right]
-            myList[right]=temp
-    # swap start with myList[right]
-    temp=myList[start]
-    myList[start]=myList[right]
-    myList[right]=temp
+            ls[left], ls[right] = ls[right], ls[left]
+    ls[start], ls[right] = ls[right], ls[start]
     return right
 
 unsorted = map(lambda _: randint(0, 100), range(100))
