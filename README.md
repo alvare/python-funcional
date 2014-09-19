@@ -8,3 +8,4 @@ Introducción a Funtores, Aplicativos y Monadas.
 ### Dependencias
 
 * [pymonad](https://pypi.python.org/pypi/PyMonad)
+* [fn.py](https://github.com/kachayev/fn.py)
