@@ -1,5 +1,4 @@
 from functools import partial
-from itertools import count
 
 
 triangles = [sum(range(x + 1)) for x in range(250)]
