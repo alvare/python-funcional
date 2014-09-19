@@ -6,4 +6,5 @@ divides = lambda a, d: a % d == 0
 divisors = lambda x: filter(partial(divides, x), range(1, x + 1))
 divCount = lambda x: len(divisors(x))
 
-print filter(lambda t: t[1] > 50, zip(triangles, map(divCount, triangles), range(240)))[0]
+tridivsnum = zip(triangles, map(divCount, triangles), range(250))
+print filter(lambda t: t[1] > 50, tridivsnum)[0]
