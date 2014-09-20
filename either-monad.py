@@ -39,10 +39,6 @@ def user_is_tecnico(tecnicos, user):
         return Left('Usuario no es técnico')
 
 @curry
-def get_nombre(user):
-    return Right(user['name'])
-
-@curry
 def get_permisos(permisos, user):
     if user['username'] in permisos:
         return Right(permisos[user['username']])
@@ -50,8 +46,8 @@ def get_permisos(permisos, user):
         return Left('No tiene permisos.')
 
 @curry
-def format_user(n, p):
-    return "El usuario {} tiene estos permisos: {}".format(n, ', '.join(p))
+def format_user(nombre, permisos):
+    return "El usuario {} tiene estos permisos: {}".format(nombre, ', '.join(permisos))
 
 
 users = [{'username': 'chancho', 'password': '444', 'name': 'Chanchito'},
@@ -68,6 +64,6 @@ val = request_contains(['username', 'password'], req) >>\
       user_exists(users) >>\
       user_authenticates(users) >>\
       user_is_tecnico(tecnicos) >> (lambda user:
-      format_user * get_nombre(user) & get_permisos(permisos, user))
+      format_user(user['name']) * get_permisos(permisos, user))
 
 print(val)
